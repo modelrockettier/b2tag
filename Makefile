@@ -12,10 +12,11 @@ override PREFIX  := $(PREFIX:/=)
 # Remove trailing slash (if present)
 override DESTDIR := $(DESTDIR:/=)
 
-CFLAGS += -Wall -Wextra -Werror -O2 -D_GNU_SOURCE -DNDEBUG
-CFLAGS += $(EXTRA_CFLAGS)
-LDLIBS = -lcrypto
-LDLIBS += $(EXTRA_LDLIBS)
+CFLAGS  += -Wall -Wextra -Werror -O2 -D_GNU_SOURCE -DNDEBUG
+CFLAGS  += $(EXTRA_CFLAGS)
+LDFLAGS += $(EXTRA_LDFLAGS)
+LDLIBS  += -lcrypto
+LDLIBS  += $(EXTRA_LDLIBS)
 
 OBJECTS = b2tag.o file.o hash.o utilities.o xa.o
 
