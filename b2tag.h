@@ -50,6 +50,8 @@ struct args_s {
 	bool dry_run;
 	/** Whether to update the hashes on backdated, corrupt, or invalid files. */
 	bool force;
+	/** Do not follow symbolic links when processing a file. */
+	bool no_dereference;
 	/** Print file hashes in the standard sha*sum, etc. format. */
 	bool print;
 	/** Process all files under the specified directories. */

@@ -432,6 +432,9 @@ static int check_dir(int fd, const char *filename, struct stat *st, struct paren
  * If @p filename is a directory and --recursive was set on the command-line,
  * this will pass it on to check_dir().
  *
+ * If @p filename is a symbolic link and --no-dereference was set on the
+ * command-line, then the link will not be followed and no processing is done.
+ *
  * @param filename  The path to check.
  * @param parents   The parent directories' inodes (to check for loops).
  *
@@ -448,17 +451,29 @@ static int process_path2(const char *filename, struct parent_dirs *parents)
 
 	assert(filename != NULL);
 
+	if (args.no_dereference) {
+		err = lstat(filename, &st);
+	}
+	else {
+		err = stat(filename, &st);
+	}
+	if (err != 0) {
+		pr_err("Error: could not stat file \"%s\": %m\n", filename);
+		return -1;
+	}
+
+	if (S_ISLNK(st.st_mode)) {
+		return ret;
+	}
+	else if (!(S_ISREG(st.st_mode) || S_ISDIR(st.st_mode))) {
+		pr_err("Error: \"%s\": not a regular file or directory\n", filename);
+		return 1;
+	}
+
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
 		pr_err("Error: could not open file \"%s\": %m\n", filename);
 		return 1;
-	}
-
-	err = fstat(fd, &st);
-	if (err != 0) {
-		pr_err("Error: could not stat file \"%s\": %m\n", filename);
-		close(fd);
-		return -1;
 	}
 
 	if (S_ISREG(st.st_mode)) {
@@ -473,11 +488,6 @@ static int process_path2(const char *filename, struct parent_dirs *parents)
 		}
 
 		ret = check_dir(fd, filename, &st, parents);
-	}
-	else {
-		pr_err("Error: \"%s\": not a regular file or directory\n", filename);
-		close(fd);
-		return 1;
 	}
 
 	return ret;

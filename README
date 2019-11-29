@@ -76,6 +76,11 @@ OPTIONS
        -p, --print
               Print the hashes of all specified files in the sha*sum format.
 
+       -P, --no-dereference
+              Don't follow symbolic links. Without this option b2tag will
+              follow any symbolic link and process the file that it
+              references.
+
        -q, --quiet
               Only print errors including checksum failures. Can be specified
               multiple times to print even fewer messages. This is the
