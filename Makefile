@@ -12,7 +12,8 @@ override PREFIX  := $(PREFIX:/=)
 # Remove trailing slash (if present)
 override DESTDIR := $(DESTDIR:/=)
 
-CFLAGS  += -Wall -Wextra -Werror -O2 -D_GNU_SOURCE -DNDEBUG
+CFLAGS  += -Wall -Wextra -Werror -O2
+CFLAGS  += -D_GNU_SOURCE -DNDEBUG -D_FILE_OFFSET_BITS=64
 CFLAGS  += $(EXTRA_CFLAGS)
 LDFLAGS += $(EXTRA_LDFLAGS)
 LDLIBS  += -lcrypto

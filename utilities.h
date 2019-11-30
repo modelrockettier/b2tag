@@ -39,6 +39,19 @@
 
 #include "b2tag.h"
 
+#ifndef MSEC_PER_SEC
+#define MSEC_PER_SEC 1000
+#endif
+
+#ifndef USEC_PER_SEC
+#define USEC_PER_SEC 1000000
+#endif
+
+#ifndef NSEC_PER_SEC
+#define NSEC_PER_SEC 1000000000
+#endif
+
+
 /**
  * Compare two timespec structures.
  *

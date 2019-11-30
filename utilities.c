@@ -62,7 +62,7 @@ int ts_compare(struct timespec ts1, struct timespec ts2, bool fuzzy)
 		/* Count timespecs within 1 usec as equal for compatibility with the
 		 * original shatag python utility.
 		 */
-		ts1.tv_nsec /= 1000;
+		ts1.tv_nsec /= (NSEC_PER_SEC / USEC_PER_SEC);
 	}
 
 	if (ts1.tv_nsec > 0)
