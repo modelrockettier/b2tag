@@ -114,6 +114,7 @@ int xa_compute(int fd, xa_t *xa)
  */
 int xa_read(int fd, xa_t *xa)
 {
+	unsigned long long sec;
 	int err;
 	int end;
 	int start;
@@ -140,9 +141,16 @@ int xa_read(int fd, xa_t *xa)
 
 	buf[len] = '\0';
 
-	err = sscanf(buf, "%ld.%n%10ld%n", &xa->mtime.tv_sec, &start, &xa->mtime.tv_nsec, &end);
+	err = sscanf(buf, "%llu.%n%10ld%n", &sec, &start, &xa->mtime.tv_nsec, &end);
 	if (err < 1) {
 		pr_err("Malformed timestamp: %m\n");
+		xa_clear(xa);
+		return 2;
+	}
+
+	xa->mtime.tv_sec = (__time_t)sec;
+	if ((unsigned long long)xa->mtime.tv_sec != sec) {
+		pr_err("Failed to read timestamp (seconds does not fit): %s\n", buf);
 		xa_clear(xa);
 		return 2;
 	}
