@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install depends
-      run: sudo apt-get install -y attr debhelper devscripts fakeroot libssl-dev xxd
+      run: sudo apt-get update && sudo apt-get install -y attr debhelper devscripts fakeroot libssl-dev xxd
     - name: make
       run: make
     - name: make test
