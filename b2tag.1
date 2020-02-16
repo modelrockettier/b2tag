@@ -123,6 +123,11 @@ This will still read and hash the specified files.
 .BR "-p, --print"
 Print the hashes of all specified files in the sha*sum format.
 .TP
+.BR "-P, --no-dereference"
+Don't follow symbolic links. Without this option
+.B b2tag
+will follow any symbolic link and process the file that it references.
+.TP
 .BR "-q, --quiet"
 Only print errors including checksum failures. Can be specified multiple times
 to print even fewer messages. This is the opposite of

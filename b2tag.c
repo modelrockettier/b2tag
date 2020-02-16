@@ -84,6 +84,7 @@ static void usage(const char *program)
 		"  -h, --help            show this help message and exit\n"
 		"  -n, --dry-run         don't update any stored attributes\n"
 		"  -p, --print           print the hashes of all specified files\n"
+		"  -P, --no-dereference  never follow symbolic links (default is to follow them)\n"
 		"  -q, --quiet           only print errors (including checksum failures)\n"
 		"  -r, --recursive       process directories and their contents (not just files)\n"
 		"  -v, --verbose         print all checksums (not just missing/changed)\n"
@@ -100,24 +101,25 @@ static void usage(const char *program)
  * Long options to pass to getopt.
  */
 static const struct option long_opts[] = {
-	{ "check",      no_argument, 0, 'c' },
-	{ "dry-run",    no_argument, 0, 'n' },
-	{ "force",      no_argument, 0, 'f' },
-	{ "help",       no_argument, 0, 'h' },
-	{ "print",      no_argument, 0, 'p' },
-	{ "quiet",      no_argument, 0, 'q' },
-	{ "recursive",  no_argument, 0, 'r' },
-	{ "verbose",    no_argument, 0, 'v' },
-	{ "version",    no_argument, 0, 'V' },
-	{ "md5",        no_argument, 0,  0  },
-	{ "sha1",       no_argument, 0,  0  },
-	{ "sha256",     no_argument, 0,  0  },
-	{ "sha512",     no_argument, 0,  0  },
-	{ "blake2",     no_argument, 0,  1  },
-	{ "blake2b",    no_argument, 0,  1  },
-	{ "blake2b512", no_argument, 0,  1  },
-	{ "blake2s",    no_argument, 0,  2  },
-	{ "blake2s256", no_argument, 0,  2  },
+	{ "check",          no_argument, 0, 'c' },
+	{ "dry-run",        no_argument, 0, 'n' },
+	{ "force",          no_argument, 0, 'f' },
+	{ "help",           no_argument, 0, 'h' },
+	{ "no-dereference", no_argument, 0, 'P' },
+	{ "print",          no_argument, 0, 'p' },
+	{ "quiet",          no_argument, 0, 'q' },
+	{ "recursive",      no_argument, 0, 'r' },
+	{ "verbose",        no_argument, 0, 'v' },
+	{ "version",        no_argument, 0, 'V' },
+	{ "md5",            no_argument, 0,  0  },
+	{ "sha1",           no_argument, 0,  0  },
+	{ "sha256",         no_argument, 0,  0  },
+	{ "sha512",         no_argument, 0,  0  },
+	{ "blake2",         no_argument, 0,  1  },
+	{ "blake2b",        no_argument, 0,  1  },
+	{ "blake2b512",     no_argument, 0,  1  },
+	{ "blake2s",        no_argument, 0,  2  },
+	{ "blake2s256",     no_argument, 0,  2  },
 	{ NULL, 0, 0, 0 }
 };
 
@@ -139,7 +141,7 @@ int main(int argc, char *argv[])
 
 	args.alg = HASH_ALG_BLAKE2B;
 
-	while ((opt = getopt_long(argc, argv, "cfhnpqrvV", long_opts, &option_index)) != -1) {
+	while ((opt = getopt_long(argc, argv, "cfhnpPqrvV", long_opts, &option_index)) != -1) {
 		switch (opt) {
 		case 0:
 			ret = get_alg_by_name(long_opts[option_index].name, &args.alg);
@@ -165,6 +167,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'p':
 			args.print = true;
+			break;
+		case 'P':
+			args.no_dereference = true;
 			break;
 		case 'q':
 			args.verbose--;
